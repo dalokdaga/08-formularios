@@ -86,13 +86,15 @@
                       [formControlName]= "i" >
             </td>
             <td>
-              <button class="btn btn-danger">Borrar</button>
+              <button class="btn btn-danger"
+                      (click)="borrarPasaTiempo(i)">Borrar</button>
             </td>
           </tr>
         </tbody>
       </table>
         <button class="btn btn-primary mt-3 mb-5 btn-block"
-                type="button"> + Agregar</button>
+                type="button"
+                (click)="agregarPasaTiempo()"> + Agregar</button>
     </div>
   </div>
 

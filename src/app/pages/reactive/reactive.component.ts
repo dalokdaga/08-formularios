@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ValidadoresService } from 'src/app/services/validadores.service';
 
 @Component({
   selector: 'app-reactive',
@@ -11,7 +12,8 @@ export class ReactiveComponent implements OnInit {
 
   forma: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private validadores: ValidadoresService) {
     this.crearFormulario();
     this.cargarData();
   }
@@ -44,15 +46,13 @@ export class ReactiveComponent implements OnInit {
   crearFormulario(){
     this.forma = this.fb.group({
       nombre  : ['', [Validators.required, Validators.minLength(3)]],
-      apellido: ['', [Validators.required, Validators.minLength(3)]],
+      apellido: ['', [Validators.required, Validators.minLength(3), this.validadores.noHerrera]],
       correo  : ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],  
       direccion:this.fb.group({
         distrito:['', [Validators.required, Validators.minLength(3)]],
         ciudad  :['', [Validators.required, Validators.minLength(3)]],
       }),      
-      pasatiempos: this.fb.array([
-        [],[],[]
-      ])
+      pasatiempos: this.fb.array([])
     });
   }
   cargarData(){
@@ -64,10 +64,23 @@ export class ReactiveComponent implements OnInit {
         direccion: {
           distrito: "villa rica",
           ciudad: "boca del rio"
-        }      
-    })
+        },
+    });
+    // cargamos informacion al arreglo pasatiempos
+    ['comer','dormir'].forEach( valor => this.pasatiempos.push(this.fb.control(valor)));
+
   }
-  guardar( ){    
+
+  agregarPasaTiempo(){
+    this.pasatiempos.push(this.fb.control(''))
+  }
+  borrarPasaTiempo(i:number){
+    this.pasatiempos.removeAt(i);
+  }
+
+  guardar( ){   
+    console.log(this.forma.value)    
+    // checamos si es invalido
     if(this.forma.invalid){
       // activamos los touched del formulario para
       // mostrar los errores de validación
@@ -80,7 +93,7 @@ export class ReactiveComponent implements OnInit {
           control.markAsTouched();        
         }        
       });   
-      console.log(this.forma.value)        
+           
     }
     
     //this.forma.reset({
