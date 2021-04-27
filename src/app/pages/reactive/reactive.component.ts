@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-reactive',
@@ -13,11 +13,17 @@ export class ReactiveComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.crearFormulario();
+    this.cargarData();
   }
 
   ngOnInit(): void {
+    
   }
+  
 
+  get pasatiempos() {
+    return this.forma.get('pasatiempos') as FormArray;
+  }
   get nombreNoValido(){
     return this.forma.get('nombre').invalid && this.forma.get('nombre').touched
   }
@@ -32,7 +38,7 @@ export class ReactiveComponent implements OnInit {
   }
 
   get ciudadNoValido(){
-    return this.forma.get('direccion.distrito').invalid && this.forma.get('direccion.distrito').touched
+    return this.forma.get('direccion.ciudad').invalid && this.forma.get('direccion.ciudad').touched
   }
 
   crearFormulario(){
@@ -43,21 +49,43 @@ export class ReactiveComponent implements OnInit {
       direccion:this.fb.group({
         distrito:['', [Validators.required, Validators.minLength(3)]],
         ciudad  :['', [Validators.required, Validators.minLength(3)]],
-      })
+      }),      
+      pasatiempos: this.fb.array([
+        [],[],[]
+      ])
     });
   }
-
-  guardar( ){
+  cargarData(){
+    //this.forma.setValue({      
+      this.forma.reset({      
+        nombre: "Daniel",
+        apellido: "Garcia",
+        correo: "dalokdaga@gmail.com",
+        direccion: {
+          distrito: "villa rica",
+          ciudad: "boca del rio"
+        }      
+    })
+  }
+  guardar( ){    
     if(this.forma.invalid){
       // activamos los touched del formulario para
       // mostrar los errores de validación
       Object.values( this.forma.controls ).forEach( control =>{
+        console.log('entro')
         console.log(control)
-        control.markAsTouched();
-      });
-
-      return;
+        if (control instanceof FormGroup){
+          Object.values( control.controls ).forEach( control => control.markAsTouched())
+        }else{
+          control.markAsTouched();        
+        }        
+      });   
+      console.log(this.forma.value)        
     }
-   console.log(this.forma.value)
+    
+    //this.forma.reset({
+      
+   // });
+   
   }
 }
