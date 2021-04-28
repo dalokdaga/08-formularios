@@ -16,6 +16,7 @@ export class ReactiveComponent implements OnInit {
               private validadores: ValidadoresService) {
     this.crearFormulario();
     this.cargarData();
+    this.creaarListeners();
   }
 
   ngOnInit(): void {
@@ -30,13 +31,13 @@ export class ReactiveComponent implements OnInit {
     return this.forma.get('nombre').invalid && this.forma.get('nombre').touched
   }
   get apellidoNoValido(){
-    return this.forma.get('apellido').invalid && this.forma.get('nombre').touched
+    return this.forma.get('apellido').invalid && this.forma.get('apellido').touched
   }
   get correoNoValido(){
-    return this.forma.get('correo').invalid && this.forma.get('nombre').touched
+    return this.forma.get('correo').invalid && this.forma.get('correo').touched
   }
   get usuarioNoValido(){
-    return this.forma.get('correo').invalid && this.forma.get('nombre').touched
+    return this.forma.get('usuario').invalid && this.forma.get('usuario').touched
   }
 
   get distritoNoValido(){
@@ -74,12 +75,23 @@ export class ReactiveComponent implements OnInit {
       validators: this.validadores.passwordsIguales('pass1','pass2')
     });
   }
+
+  creaarListeners(){
+    // this.forma.valueChanges.subscribe( valor=> {
+    //   console.log(valor)
+    // });
+    // this.forma.statusChanges.subscribe(status=> console.log({status}));
+    this.forma.get('nombre').valueChanges.subscribe(console.log)
+  }
+
   cargarData(){
     //this.forma.setValue({      
       this.forma.reset({      
         nombre: "Daniel",
         apellido: "Garcia",
         correo: "dalokdaga@gmail.com",
+        pass1: '123456',
+        pass2: '123456',
         direccion: {
           distrito: "villa rica",
           ciudad: "boca del rio"
